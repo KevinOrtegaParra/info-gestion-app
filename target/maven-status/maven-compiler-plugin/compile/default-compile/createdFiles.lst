@@ -1,0 +1,5 @@
+com\iudigital\info\gestion\presentacion\InfoGestionApp.class
+com\iudigital\info\gestion\domain\Funcionario.class
+com\iudigital\info\gestion\dao\FuncionarioDao.class
+com\iudigital\info\gestion\util\ConnectionUtil.class
+com\iudigital\info\gestion\controller\InfoGestionController.class
