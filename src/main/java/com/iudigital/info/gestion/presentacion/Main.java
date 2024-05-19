@@ -4,8 +4,12 @@
  */
 package com.iudigital.info.gestion.presentacion;
 
+import com.iudigital.info.gestion.controller.EstadoCivilController;
 import com.iudigital.info.gestion.controller.FuncionarioController;
+import com.iudigital.info.gestion.controller.TipoDocumentoController;
+import com.iudigital.info.gestion.domain.EstadoCivil;
 import com.iudigital.info.gestion.domain.Funcionario;
+import com.iudigital.info.gestion.domain.TipoDocumento;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +24,8 @@ import javax.swing.table.DefaultTableModel;
 public class Main extends javax.swing.JFrame {
 
     private final FuncionarioController funcionarioController;
+    private final TipoDocumentoController tipoDocumentoController;
+    private final EstadoCivilController estadoCivilController;
     //table funcionario title
     private static final String ids[] = {"id", "Tipo identificasion", "Numero identificasion", "Nombre", "Apellido", "Estado Civil", "Sexo", "Direccion", "Telefono", "Fecha nacimiento"};
     private static final String SELECCIONE = "---SELECCIONE---";
@@ -29,7 +35,11 @@ public class Main extends javax.swing.JFrame {
 
         txtFuncionarioIdEdit.setEditable(false);
         funcionarioController = new FuncionarioController();
+        tipoDocumentoController = new TipoDocumentoController();
+        estadoCivilController = new EstadoCivilController();
         listarFuncionarios();
+        listarTipoDocumento();
+        listarEstadoCivil();
         addListener();
     }
 
@@ -54,15 +64,15 @@ public class Main extends javax.swing.JFrame {
             int row = 0;
             for (Funcionario funcionario : funcionarios) {
                 mt.setValueAt(funcionario.getId(), row, 0);
-                mt.setValueAt(funcionario.getTipo_identificasion(), row, 1);
-                mt.setValueAt(funcionario.getNum_identificasion(), row, 2);
+                mt.setValueAt(funcionario.getTipoIdentificacionNombre(), row, 1);
+                mt.setValueAt(funcionario.getNumIdentificacion(), row, 2);
                 mt.setValueAt(funcionario.getNombre(), row, 3);
                 mt.setValueAt(funcionario.getApellido(), row, 4);
-                mt.setValueAt(funcionario.getEstado_civil(), row, 5);
+                mt.setValueAt(funcionario.getEstadoCivilNombre(), row, 5);
                 mt.setValueAt(funcionario.getSexo(), row, 6);
                 mt.setValueAt(funcionario.getDireccion(), row, 7);
                 mt.setValueAt(funcionario.getTelefono(), row, 8);
-                mt.setValueAt(funcionario.getFecha_nacimiento(), row, 9);
+                mt.setValueAt(funcionario.getFechaNacimiento(), row, 9);
                 row++;
 
                 cbxFuncionarios.addItem(funcionario);
@@ -71,6 +81,42 @@ public class Main extends javax.swing.JFrame {
             ex.printStackTrace();
         }
 
+    }
+    
+    private void listarTipoDocumento(){
+        cbxTipoIdentificasion.removeAllItems();
+        cbxTipoIdentificaionEdit.removeAllItems();
+        TipoDocumento tipoDocumento = new TipoDocumento();
+        tipoDocumento.setNombre(SELECCIONE);
+        cbxTipoIdentificasion.addItem(tipoDocumento);
+        cbxTipoIdentificaionEdit.addItem(tipoDocumento);
+        try {
+            List<TipoDocumento> tipoDocumentos = tipoDocumentoController.getTipoDocumento();
+            for(TipoDocumento Documento : tipoDocumentos){
+                cbxTipoIdentificasion.addItem(Documento);
+                cbxTipoIdentificaionEdit.addItem(Documento);
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    private void listarEstadoCivil(){
+        cbxEstadoCivil.removeAllItems();
+        cbxEstadoCivilEdit.removeAllItems();
+        EstadoCivil estadoCivil = new EstadoCivil();
+        estadoCivil.setNombre(SELECCIONE);
+        cbxEstadoCivil.addItem(estadoCivil);
+        cbxEstadoCivilEdit.addItem(estadoCivil);
+        try {
+            List<EstadoCivil> estados = estadoCivilController.getEstadoCivil();
+            for(EstadoCivil estado : estados){
+                cbxEstadoCivil.addItem(estado);
+                cbxEstadoCivilEdit.addItem(estado);
+            }
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void addListener() {
@@ -89,11 +135,11 @@ public class Main extends javax.swing.JFrame {
                 txtFechaNacimientoEdit.setText("");
             } else {
                 txtFuncionarioIdEdit.setText(String.valueOf(selecFuncionario.getId()));
-                cbxTipoIdentificaionEdit.setSelectedItem(selecFuncionario.getTipo_identificasion());
-                txtNumIdentificasionEdit.setText(selecFuncionario.getNum_identificasion());
+                cbxTipoIdentificaionEdit.setSelectedIndex(Integer.parseInt(selecFuncionario.getTipoIdentificacion()));
+                txtNumIdentificasionEdit.setText(selecFuncionario.getNumIdentificacion());
                 txtNombreEdit.setText(selecFuncionario.getNombre());
                 txtApellidoEdit.setText(selecFuncionario.getApellido());
-                cbxEstadoCivilEdit.setSelectedItem(selecFuncionario.getEstado_civil());
+                cbxEstadoCivilEdit.setSelectedIndex(Integer.parseInt(selecFuncionario.getEstadoCivil()));
                 if (selecFuncionario.getSexo() == 'M') {
                     jRadioButton3.setSelected(true);
                 } else if (selecFuncionario.getSexo() == 'F') {
@@ -101,7 +147,7 @@ public class Main extends javax.swing.JFrame {
                 }
                 txtDireccionEdit.setText(selecFuncionario.getDireccion());
                 txtTelefonoEdit.setText(selecFuncionario.getTelefono());
-                txtFechaNacimientoEdit.setText(String.valueOf(selecFuncionario.getFecha_nacimiento()));
+                txtFechaNacimientoEdit.setText(String.valueOf(selecFuncionario.getFechaNacimiento()));
             }
         });
     }
@@ -140,7 +186,7 @@ public class Main extends javax.swing.JFrame {
         cbxTipoIdentificasion = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         txtFechaNacimiento = new javax.swing.JFormattedTextField();
-        cbxEstadoSivil = new javax.swing.JComboBox<>();
+        cbxEstadoCivil = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblFuncionario = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
@@ -223,7 +269,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        cbxTipoIdentificasion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---SELECCIONE---", "Cédula de Ciudadanía", "Tarjeta de Identidad", "Cédula de Extranjería", "Pasaporte", "Licencia de Conducción", "Identificación Milita", "Tarjeta Profesional", "Tarjeta de Seguro Social " }));
         cbxTipoIdentificasion.setToolTipText("");
         cbxTipoIdentificasion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -238,8 +283,6 @@ public class Main extends javax.swing.JFrame {
                 txtFechaNacimientoActionPerformed(evt);
             }
         });
-
-        cbxEstadoSivil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---SELECCIONE---", "Soltero/a", "Casado/a", "Viudo/a", "Divorciado/a", "Unión Civil/Pareja de Hecho", "Separado/a" }));
 
         javax.swing.GroupLayout jPFunLayout = new javax.swing.GroupLayout(jPFun);
         jPFun.setLayout(jPFunLayout);
@@ -271,7 +314,7 @@ public class Main extends javax.swing.JFrame {
                                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                         .addGroup(jPFunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblSexo)
                             .addGroup(jPFunLayout.createSequentialGroup()
@@ -287,8 +330,8 @@ public class Main extends javax.swing.JFrame {
                                         .addComponent(jRadioButton1)
                                         .addGap(18, 18, 18)
                                         .addComponent(jRadioButton2))
-                                    .addComponent(cbxEstadoSivil, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addContainerGap(29, Short.MAX_VALUE))))
+                                    .addComponent(cbxEstadoCivil, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(35, Short.MAX_VALUE))))
         );
         jPFunLayout.setVerticalGroup(
             jPFunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,7 +341,7 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(lblEstadoCivil)
                     .addComponent(lblTipoIdentificasion)
                     .addComponent(cbxTipoIdentificasion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxEstadoSivil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxEstadoCivil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(8, 8, 8)
                 .addGroup(jPFunLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSexo)
@@ -336,28 +379,23 @@ public class Main extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblFuncionario);
 
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 706, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 34, Short.MAX_VALUE)
+        );
+
         btnDelete1.setText("Eliminar");
         btnDelete1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDelete1ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(330, Short.MAX_VALUE)
-                .addComponent(btnDelete1)
-                .addGap(303, 303, 303))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(btnDelete1)
-                .addGap(0, 12, Short.MAX_VALUE))
-        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -372,6 +410,10 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnDelete1)
+                .addGap(321, 321, 321))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -379,10 +421,12 @@ public class Main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPFun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDelete1)
+                .addGap(110, 110, 110)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanels.addTab("Crear Funcionario", jPanel1);
@@ -426,8 +470,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        cbxTipoIdentificaionEdit.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---SELECCIONE---", "Cédula de Ciudadanía", "Tarjeta de Identidad", "Cédula de Extranjería", "Pasaporte", "Licencia de Conducción", "Identificación Milita", "Tarjeta Profesional", "Tarjeta de Seguro Social " }));
-
         Group2SexoEdit.add(jRadioButton3);
         jRadioButton3.setText("Masculino");
 
@@ -462,8 +504,6 @@ public class Main extends javax.swing.JFrame {
                 btnDeleteActionPerformed(evt);
             }
         });
-
-        cbxEstadoCivilEdit.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "---SELECCIONE---", "Soltero/a", "Casado/a", "Viudo/a", "Divorciado/a", "Unión Civil/Pareja de Hecho", "Separado/a" }));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -573,7 +613,7 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEdit)
                     .addComponent(btnDelete))
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -595,7 +635,7 @@ public class Main extends javax.swing.JFrame {
 
         jPanels.addTab("Actualizar Funcionario", jPanel2);
 
-        getContentPane().add(jPanels, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 730, 440));
+        getContentPane().add(jPanels, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 60, 730, 460));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -637,9 +677,9 @@ public class Main extends javax.swing.JFrame {
             txtApellido.requestFocus();
             return;
         }
-        if (cbxEstadoSivil.getSelectedItem() == SELECCIONE) {
+        if (cbxEstadoCivil.getSelectedItem() == SELECCIONE) {
             JOptionPane.showMessageDialog(null, "Digite el Estado Sivil");
-            cbxEstadoSivil.requestFocus();
+            cbxEstadoCivil.requestFocus();
             return;
         }
         if (Group1Sexo.getSelection() == null) {
@@ -664,11 +704,13 @@ public class Main extends javax.swing.JFrame {
 
         try {
             Funcionario funcionaro = new Funcionario();
-            funcionaro.setTipo_identificasion((String) cbxTipoIdentificasion.getSelectedItem());
-            funcionaro.setNum_identificasion(txtNumIdentificasion.getText().trim());
+            funcionaro.setTipoIdentificacion(String.valueOf(cbxTipoIdentificasion.getSelectedIndex()));
+            funcionaro.setTipoIdentificacionNombre(String.valueOf(cbxTipoIdentificasion.getSelectedItem()));
+            funcionaro.setNumIdentificacion(txtNumIdentificasion.getText().trim());
             funcionaro.setNombre(txtNombre.getText().trim());
             funcionaro.setApellido(txtApellido.getText().trim());
-            funcionaro.setEstado_civil((String) cbxEstadoSivil.getSelectedItem());
+            funcionaro.setEstadoCivil(String.valueOf(cbxEstadoCivil.getSelectedIndex()));
+            funcionaro.setEstadoCivilNombre(String.valueOf(cbxEstadoCivil.getSelectedItem()));
             funcionaro.setSexo(jRadioButton1.isSelected() ? 'M' : 'F');
             funcionaro.setDireccion(txtDireccion.getText().trim());
             funcionaro.setTelefono(txtTelefono.getText().trim());
@@ -678,7 +720,7 @@ public class Main extends javax.swing.JFrame {
                 String fechaTexto = txtFechaNacimiento.getText().trim();
                 LocalDate fechaNacimiento = LocalDate.parse(fechaTexto, formatter);
 
-                funcionaro.setFecha_nacimiento(fechaNacimiento);
+                funcionaro.setFechaNacimiento(fechaNacimiento);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Use el formato yyyy-MM-dd\nEjemplo = 2003-10-02");
                 txtFechaNacimiento.requestFocus();
@@ -690,7 +732,7 @@ public class Main extends javax.swing.JFrame {
             txtNumIdentificasion.setText("");
             txtNombre.setText("");
             txtApellido.setText("");
-            cbxEstadoSivil.setSelectedIndex(0);
+            cbxEstadoCivil.setSelectedIndex(0);
             Group1Sexo.clearSelection();
             txtDireccion.setText("");
             txtTelefono.setText("");
@@ -755,11 +797,13 @@ public class Main extends javax.swing.JFrame {
             return;
         }
         Funcionario funcionaro = new Funcionario();
-        funcionaro.setTipo_identificasion((String) cbxTipoIdentificaionEdit.getSelectedItem());
-        funcionaro.setNum_identificasion(txtNumIdentificasionEdit.getText().trim());
+        funcionaro.setTipoIdentificacion(String.valueOf(cbxTipoIdentificaionEdit.getSelectedIndex()));
+        funcionaro.setTipoIdentificacionNombre(String.valueOf(cbxTipoIdentificaionEdit.getSelectedItem()));
+        funcionaro.setNumIdentificacion(txtNumIdentificasionEdit.getText().trim());
         funcionaro.setNombre(txtNombreEdit.getText().trim());
         funcionaro.setApellido(txtApellidoEdit.getText().trim());
-        funcionaro.setEstado_civil((String) cbxEstadoCivilEdit.getSelectedItem());
+        funcionaro.setEstadoCivil(String.valueOf(cbxEstadoCivilEdit.getSelectedIndex()));
+        funcionaro.setEstadoCivilNombre(String.valueOf(cbxEstadoCivilEdit.getSelectedItem()));
         funcionaro.setSexo(jRadioButton3.isSelected() ? 'M' : 'F');
         funcionaro.setDireccion(txtDireccionEdit.getText().trim());
         funcionaro.setTelefono(txtTelefonoEdit.getText().trim());
@@ -769,7 +813,7 @@ public class Main extends javax.swing.JFrame {
             String fechaTexto = txtFechaNacimientoEdit.getText().trim();
             LocalDate fechaNacimiento = LocalDate.parse(fechaTexto, formatter);
 
-            funcionaro.setFecha_nacimiento(fechaNacimiento);
+            funcionaro.setFechaNacimiento(fechaNacimiento);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Use el formato yyyy-MM-dd\nEjemplo = 2003-10-02");
             txtFechaNacimientoEdit.requestFocus();
@@ -931,11 +975,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDelete1;
     private javax.swing.JButton btnEdit;
-    private javax.swing.JComboBox<String> cbxEstadoCivilEdit;
-    private javax.swing.JComboBox<String> cbxEstadoSivil;
+    private javax.swing.JComboBox<EstadoCivil> cbxEstadoCivil;
+    private javax.swing.JComboBox<EstadoCivil> cbxEstadoCivilEdit;
     private javax.swing.JComboBox<Funcionario> cbxFuncionarios;
-    private javax.swing.JComboBox<String> cbxTipoIdentificaionEdit;
-    private javax.swing.JComboBox<String> cbxTipoIdentificasion;
+    private javax.swing.JComboBox<TipoDocumento> cbxTipoIdentificaionEdit;
+    private javax.swing.JComboBox<TipoDocumento> cbxTipoIdentificasion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;

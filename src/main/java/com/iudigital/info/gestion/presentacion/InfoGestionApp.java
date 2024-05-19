@@ -24,15 +24,15 @@ public class InfoGestionApp {
             }else{
                 funcionarios.forEach(funcionario -> {
                     System.out.println("id = "+funcionario.getId());
-                    System.out.println("tipo de identificasion = "+funcionario.getTipo_identificasion());
-                    System.out.println("numero de identificasion = "+funcionario.getNum_identificasion());
+                    System.out.println("tipo de identificasion = "+funcionario.getTipoIdentificacion());
+                    System.out.println("numero de identificasion = "+funcionario.getNumIdentificacion());
                     System.out.println("nombre = "+funcionario.getNombre());
                     System.out.println("apellido = "+funcionario.getApellido());
-                    System.out.println("estado civil = "+funcionario.getEstado_civil());
+                    System.out.println("estado civil = "+funcionario.getEstadoCivil());
                     System.out.println("sexo = "+funcionario.getSexo());
                     System.out.println("direccion = "+funcionario.getDireccion());
                     System.out.println("telefono = "+funcionario.getTelefono());
-                    System.out.println("fecha de nacimiento = "+funcionario.getFecha_nacimiento());  
+                    System.out.println("fecha de nacimiento = "+funcionario.getFechaNacimiento());  
                     System.out.println("----------------------------------------------------------");
                 });
             }

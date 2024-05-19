@@ -13,15 +13,17 @@ import java.time.LocalDate;
 public class Funcionario {
     
     private int id;
-    private String tipo_identificasion;
-    private String num_identificasion;
+    private String tipoIdentificacion;
+    private String tipoIdentificacionNombre;
+    private String numIdentificacion;
     private String nombre;
     private String apellido;
-    private String estado_civil;
+    private String estadoCivil;
+    private String estadoCivilNombre;
     private char sexo;
     private String direccion;
     private String telefono; 
-    private LocalDate fecha_nacimiento;
+    private LocalDate fechaNacimiento;
 
     public int getId() {
         return id;
@@ -31,20 +33,28 @@ public class Funcionario {
         this.id = id;
     }
 
-    public String getTipo_identificasion() {
-        return tipo_identificasion;
+    public String getTipoIdentificacion() {
+        return tipoIdentificacion;
     }
 
-    public void setTipo_identificasion(String tipo_identificasion) {
-        this.tipo_identificasion = tipo_identificasion;
+    public void setTipoIdentificacion(String tipoIdentificacion) {
+        this.tipoIdentificacion = tipoIdentificacion;
     }
 
-    public String getNum_identificasion() {
-        return num_identificasion;
+    public String getTipoIdentificacionNombre() {
+        return tipoIdentificacionNombre;
     }
 
-    public void setNum_identificasion(String num_identificasion) {
-        this.num_identificasion = num_identificasion;
+    public void setTipoIdentificacionNombre(String tipoIdentificacionNombre) {
+        this.tipoIdentificacionNombre = tipoIdentificacionNombre;
+    }
+
+    public String getNumIdentificacion() {
+        return numIdentificacion;
+    }
+
+    public void setNumIdentificacion(String numIdentificacion) {
+        this.numIdentificacion = numIdentificacion;
     }
 
     public String getNombre() {
@@ -63,12 +73,20 @@ public class Funcionario {
         this.apellido = apellido;
     }
 
-    public String getEstado_civil() {
-        return estado_civil;
+    public String getEstadoCivil() {
+        return estadoCivil;
     }
 
-    public void setEstado_civil(String estado_civil) {
-        this.estado_civil = estado_civil;
+    public void setEstadoCivil(String estadoCivil) {
+        this.estadoCivil = estadoCivil;
+    }
+
+    public String getEstadoCivilNombre() {
+        return estadoCivilNombre;
+    }
+
+    public void setEstadoCivilNombre(String estadoCivilNombre) {
+        this.estadoCivilNombre = estadoCivilNombre;
     }
 
     public char getSexo() {
@@ -95,17 +113,17 @@ public class Funcionario {
         this.telefono = telefono;
     }
 
-    public LocalDate getFecha_nacimiento() {
-        return fecha_nacimiento;
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
-        this.fecha_nacimiento = fecha_nacimiento;
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     @Override
     public String toString() {
-        return nombre + " " + apellido ;
+        return  nombre + " " + apellido;
     }
     
     
